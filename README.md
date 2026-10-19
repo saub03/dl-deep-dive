@@ -1,523 +1,429 @@
 # dl-deep-dive
 
-> **딥러닝을 '사용하는 것'에서 '이해하고, 구현하고, 실험하고, 연구하는 것'으로.**
->
-> 교재와 원 논문을 나란히 학습하고, 축소 재현 실험을 거쳐 스스로 연구 질문을 찾기 위한 학습·연구 저장소.
+## 프로젝트 소개
 
-## 목차
+딥러닝을 이해하고, 직접 구현하고, 작은 실험을 거쳐 연구 질문을 찾기 위한 학습·연구 저장소다.
 
-1. [프로젝트 개요 및 목표](#1-프로젝트-개요-및-목표)
-2. [학습 원칙과 완료 기준](#2-학습-원칙과-완료-기준)
-3. [학습 체크리스트](#3-학습-체크리스트)
-4. [학습 기록·프로젝트·산출물 링크](#4-학습-기록프로젝트산출물-링크)
-5. [교재·논문·아티클 라이브러리](#5-교재논문아티클-라이브러리)
-6. [연구 주제 탐색 및 실험 규칙](#6-연구-주제-탐색-및-실험-규칙)
-7. [저장소 구조 및 문서 템플릿](#7-저장소-구조-및-문서-템플릿)
+- **학습 흐름:** 교재로 개념 이해 → 원 논문 읽기 → 핵심 구현 → 비교 실험 → 결과 정리
+- **범위:** 딥러닝 기초, CNN, NLP, Transformer, 강화학습, 생성 모델, LLM, 멀티모달, 학습 효율화
+- **교재:** 『밑바닥부터 시작하는 딥러닝』 1·2·4·5·6권, *Hands-On Machine Learning with Scikit-Learn and PyTorch*
+- **목표:** 학교 GPU 자원을 활용해 재현 가능한 독립 연구 프로젝트 수행
 
----
+밑시딥 1권은 기존 1회독 내용을 복습한다. 3권은 정규 범위에서 제외하고, 핸즈온 1~8장은 부족한 머신러닝 개념을 보충할 때만 참고한다.
 
-## 1. 프로젝트 개요 및 목표
+## 학습 체크리스트
 
-**프로젝트명:** `dl-deep-dive`  
-**학습 방법:** 교재 이해 → 논문 정독 → 핵심 알고리즘 구현 → 비교 실험 → 학습 정리 → 연구 질문 도출  
-**핵심 교재:** 『밑바닥부터 시작하는 딥러닝』 **1·2·4·5·6권**, *Hands-On Machine Learning with Scikit-Learn and PyTorch*  
-**범위:** 딥러닝 기초, CNN, NLP, Transformer, LLM, RL, 생성 모델, 멀티모달, 학습 효율화  
-**최종 지향점:** 학교의 GPU 자원을 활용한 **재현 가능한 독립 연구 프로젝트**
+각 체크는 **1~3시간, 길어도 하루 안에 끝낼 작업**이다. 제목은 작업 묶음이며, 개별 체크를 완료한 뒤 노트·코드·결과를 남긴다. **핵심**부터 진행하고 **확장**은 관심에 따라 선택한다.
 
-### 목표
+실습은 작은 데이터·모델로 시작한다. 별도 조건이 없으면 학습 실행은 **회당 30분 이내**로 제한하고, 비교 실험은 같은 데이터 분할·시드·학습 예산을 사용한다. 제한 시간에 도달하면 현재 결과와 학습량을 기록한다. 시간이 더 필요한 작업은 다음 체크로 나눈다. 주제별 정리는 **1쪽 이내**로 작성한다.
 
-- [ ] 역전파·최적화·일반화·주요 신경망 구조를 수식과 코드로 설명할 수 있다.
-- [ ] PyTorch로 데이터 준비부터 학습·평가·모델 저장까지 독립적으로 구현한다.
-- [ ] 대표 논문을 읽고 **문제 → 핵심 기여 → 실험 설계 → 한계**를 요약한다.
-- [ ] 주요 아키텍처를 작은 규모로 구현하거나 기존 구현의 핵심 부분을 재현한다.
-- [ ] 여러 연구 분야를 탐색하고 집중 연구할 주제와 가설을 선정한다.
-- [ ] Baseline·비교 실험·Ablation을 포함한 연구 결과를 문서화한다.
-- [ ] 코드, 환경, 설정, 평가 방법을 공개 가능한 수준으로 정리한다.
+### 1. 딥러닝 기초: 역전파·최적화·CNN
 
-> **학습 범위 원칙:** '밑시딥 3권'은 정규 학습 범위에서 제외한다. 자동미분 프레임워크 내부 구현이 필요한 경우에만 선택적으로 참고한다. 『핸즈온』 1~8장은 이미 익숙한 머신러닝 개념의 부족한 부분을 보충할 때 사용한다.
+**교재:** 밑시딥 1권 4~7장 · 핸즈온 9~12장, 부록 A
 
-## 2. 학습 원칙과 완료 기준
+#### 신경망과 역전파 — 핵심
 
-### 자료별 학습 방법
+- [ ] 손실함수와 미니배치 학습 부분을 복습하고, 작은 분류 예제의 교차 엔트로피를 손으로 계산한다.
+- [ ] 수치미분과 연쇄법칙 부분을 복습하고, 스칼라 계산 그래프 하나의 기울기를 손으로 구한다.
+- [ ] [역전파 논문](https://doi.org/10.1038/323533a0)의 학습 규칙 부분을 읽고, 출력층에서 은닉층으로 오차가 전달되는 식을 정리한다.
+- [ ] NumPy로 Affine 계층의 순전파·역전파를 구현하고 입력·가중치·편향의 shape을 확인한다.
+- [ ] NumPy로 ReLU와 SoftmaxWithLoss의 순전파·역전파를 구현하고 작은 입력의 출력을 확인한다.
+- [ ] 작은 2층 신경망에서 수치미분과 역전파의 상대 오차를 계산하는 Gradient Check를 작성한다.
+- [ ] MNIST 일부로 2층 신경망을 학습하고 손실 곡선과 검증 정확도를 저장한다.
+- [ ] 연쇄법칙, 계층별 기울기 shape, Gradient Check 결과를 1쪽으로 정리한다.
 
-| 자료 | 목표 | 완료 판단 기준 |
+#### 최적화와 일반화 — 핵심
+
+- [ ] SGD와 Momentum의 갱신식을 복습하고, 이차함수 위의 이동 경로를 그린다.
+- [ ] [Adam](https://arxiv.org/abs/1412.6980)의 알고리즘 부분을 읽고, 모멘트 추정과 편향 보정 계산을 작은 배열로 확인한다.
+- [ ] 초기화 부분을 복습하고, 초기화 방식 2개의 층별 활성값 분포를 비교한다.
+- [ ] 가중치 감쇠와 Dropout 부분을 복습하고, 각각 학습·추론 시 무엇이 달라지는지 표로 정리한다.
+- [ ] PyTorch Dataset·DataLoader를 구성하고 train/validation/test 분할 및 배치 shape을 확인한다.
+- [ ] 학습·검증 루프를 작성하고, 작은 배치 하나에 과적합할 수 있는지 확인한다.
+- [ ] 시드 고정, 지표 저장, 체크포인트 저장·불러오기를 추가하고 재개 전후 출력을 비교한다.
+- [ ] 같은 2층 신경망에서 SGD와 Momentum을 각각 짧게 실행하고 손실 곡선을 저장한다.
+- [ ] 같은 조건에서 Adam을 실행하고, 세 옵티마이저의 검증 손실과 실행 시간을 표로 비교한다.
+- [ ] 학습률 2개를 비교하고, 학습·검증 곡선에서 과소학습과 과적합 징후를 표시한다.
+- [ ] 옵티마이저·학습률·초기화가 결과에 준 영향과 비교의 한계를 1쪽으로 정리한다.
+
+**확장**
+
+- [ ] [Batch Normalization](https://arxiv.org/abs/1502.03167)의 정규화 식과 학습·추론 절차를 읽고 차이를 정리한다.
+- [ ] [Dropout](https://jmlr.org/papers/v15/srivastava14a.html)의 방법과 대표 실험 하나를 읽고, 과적합 완화에 대한 주장을 요약한다.
+- [ ] [Super-Convergence](https://arxiv.org/abs/1708.07120)의 학습률 일정과 대표 실험 하나를 읽고, 검증해 볼 조건을 적는다.
+
+#### CNN과 잔차 연결 — 핵심
+
+- [ ] 합성곱·풀링 부분을 복습하고, 커널·패딩·스트라이드가 다른 예제 3개의 출력 shape을 계산한다.
+- [ ] PyTorch로 작은 CNN을 구현하고 MNIST 일부에서 학습이 진행되는지 확인한다.
+- [ ] [ResNet](https://arxiv.org/abs/1512.03385)의 잔차 학습 부분을 읽고, 기본 블록과 projection shortcut을 그린다.
+- [ ] Residual Block을 구현하고, 해상도·채널 수가 유지되거나 바뀌는 입력의 shape을 검증한다.
+- [ ] 깊이를 맞춘 일반 CNN과 잔차 CNN을 준비하고, 각 층의 기울기 크기를 기록한다.
+- [ ] 두 모델을 같은 예산으로 짧게 학습하고, 손실 곡선·기울기·검증 정확도를 1쪽으로 비교한다.
+- [ ] **확장:** [AlexNet](https://proceedings.neurips.cc/paper/2012/hash/c399862d3b9d6b76c8436e924a68c45b-Abstract.html)의 구조와 대표 결과 표를 읽고, 앞서 만든 CNN과의 차이 3개를 적는다.
+
+### 2. NLP: 단어 표현·RNN·Attention·Transformer
+
+**교재:** 밑시딥 2권 2~8장 · 핸즈온 13~15장
+
+#### 단어 표현 — 핵심
+
+- [ ] 작은 말뭉치를 토큰화하고, 단어 사전·동시발생 행렬·코사인 유사도를 계산한다.
+- [ ] 분산 표현과 CBOW 부분을 읽고, 문맥에서 목표 단어를 예측하는 데이터 쌍 5개를 만든다.
+- [ ] [word2vec](https://arxiv.org/abs/1301.3781)의 CBOW·Skip-gram 구조를 읽고, 입력·출력·학습 목적을 비교한다.
+- [ ] Negative Sampling 부분을 읽고, 양성·음성 단어 쌍에 대한 손실을 작은 배열로 계산한다.
+- [ ] 작은 말뭉치용 CBOW와 Negative Sampling 손실을 구현하고 한 배치의 역전파를 확인한다.
+- [ ] 임베딩을 짧게 학습하고, 단어 5개의 최근접 단어와 유추 질의 3개의 결과를 저장한다.
+- [ ] 희귀어·다의어·작은 말뭉치에서 생긴 한계를 예시와 함께 1쪽으로 정리한다.
+- [ ] **확장:** [GloVe](https://aclanthology.org/D14-1162/)의 목적함수를 읽고, word2vec과 사용하는 통계가 어떻게 다른지 적는다.
+
+#### RNN·LSTM·Seq2Seq — 핵심
+
+- [ ] RNN과 BPTT 부분을 읽고, 3시점 계산 그래프와 기울기 전달 경로를 그린다.
+- [ ] RNN 셀을 구현하고, 작은 시퀀스의 출력과 은닉 상태 shape을 확인한다.
+- [ ] [LSTM](https://www.bioinf.jku.at/publications/older/2604.pdf)의 셀 상태와 게이트 부분을 읽고, 교재의 표기와 대응시킨다.
+- [ ] LSTM 셀의 게이트 계산을 구현하고, 한 시점의 값을 직접 계산한 결과와 비교한다.
+- [ ] 동일한 복사 과제에서 RNN과 LSTM을 짧게 학습하고 시퀀스 길이별 정확도를 기록한다.
+- [ ] [Seq2Seq](https://arxiv.org/abs/1409.3215)의 Encoder–Decoder와 학습 부분을 읽고, Teacher Forcing 과정을 그린다.
+- [ ] 숫자열 뒤집기 과제의 데이터·패딩·정답 마스크를 준비하고 배치 하나를 확인한다.
+- [ ] LSTM Encoder–Decoder를 구현하고, 한 배치 학습과 탐욕적 디코딩을 확인한다.
+- [ ] 짧은 숫자열로 Seq2Seq를 학습하고, 길이가 다른 입력 10개의 예측·정답과 성공 여부를 저장한다.
+- [ ] 장기 의존성, 기울기 소실, 고정 길이 문맥의 한계를 실험 결과와 함께 1쪽으로 정리한다.
+- [ ] **확장:** [Generating Sequences with Recurrent Neural Networks](https://arxiv.org/abs/1308.0850)의 생성 절차와 예시 하나를 읽고, 학습과 생성의 차이를 적는다.
+
+#### Attention과 Transformer — 핵심
+
+- [ ] 밑시딥 2권의 Attention 부분을 읽고, Query·Key·Value에 대응하는 텐서를 표시한다.
+- [ ] [Bahdanau Attention](https://arxiv.org/abs/1409.0473)의 정렬 점수와 문맥 벡터 식을 읽고, 작은 예제를 계산한다.
+- [ ] Bahdanau Attention을 Seq2Seq에 추가하고, 패딩 위치의 가중치가 0이 되는지 확인한다.
+- [ ] 기존 Seq2Seq와 같은 조건으로 학습하고, 길이별 정확도와 Attention 가중치 그림을 저장한다.
+- [ ] [Attention Is All You Need](https://arxiv.org/abs/1706.03762)의 모델 구조 부분을 읽고, Encoder·Decoder 블록의 데이터 흐름을 그린다.
+- [ ] 같은 논문의 Attention 수식을 읽고, 스케일링·Multi-Head·마스크의 역할을 설명한다.
+- [ ] Scaled Dot-Product Attention을 구현하고, 마스크 적용 전후의 확률 합과 출력을 검증한다.
+- [ ] Multi-Head Attention을 구현하고, head 분할·결합 시 텐서 shape을 검증한다.
+- [ ] Positional Encoding과 causal mask를 구현하고, eval 모드에서 미래 토큰을 바꿔도 이전 위치 출력이 유지되는지 확인한다.
+- [ ] Residual·LayerNorm·FFN을 묶어 작은 Decoder 블록을 구현하고 한 배치의 순전파·역전파를 확인한다.
+- [ ] 2층 Decoder-only Transformer에 문자 단위 데이터와 다음 문자 예측 손실을 연결한다.
+- [ ] 모델을 짧게 학습하고, 검증 손실과 온도 2가지의 생성 예시를 저장한다.
+- [ ] Transformer 논문의 주요 결과 표 하나와 Ablation 하나를 읽고, 직접 확인한 내용과 미검증 주장을 구분한다.
+- [ ] RNN→Attention→Transformer의 변화와 실습 결과를 1쪽으로 정리한다.
+
+### 3. 강화학습: 가치 기반 방법·정책 최적화
+
+**교재:** 밑시딥 4권 1~10장 · 핸즈온 19장
+
+#### 기초와 가치 기반 방법 — 핵심
+
+- [ ] MDP·정책·가치함수 부분을 읽고, 작은 GridWorld의 상태·행동·보상·종료 조건을 정의한다.
+- [ ] 벨만 방정식을 읽고, 고정 정책에서 상태 하나의 가치 갱신을 손으로 계산한다.
+- [ ] GridWorld 환경과 정책 평가를 구현하고, 작은 격자의 가치 표를 출력한다.
+- [ ] 정책 개선과 가치 반복을 구현하고, 최종 정책 및 수렴 오차를 저장한다.
+- [ ] Monte Carlo와 TD(0) 부분을 읽고, 같은 짧은 에피소드에 대한 갱신값을 비교한다.
+- [ ] GridWorld에 TD(0)를 구현하고, DP로 구한 가치와의 오차를 그린다.
+- [ ] [Q-learning](https://link.springer.com/article/10.1007/BF00992698)의 갱신식과 조건을 읽고, on-policy·off-policy 차이를 적는다.
+- [ ] ε-greedy Q-learning을 구현하고, 에피소드별 보상과 학습된 정책을 저장한다.
+- [ ] ε 값 2개를 비교하고, 탐색·활용과 Bellman Update를 결과와 함께 1쪽으로 정리한다.
+- [ ] **확장:** [Multi-Armed Bandit](https://link.springer.com/article/10.1023/A:1013689704352)의 UCB 선택 규칙을 읽고, 간단한 밴딧에서 ε-greedy와 누적 보상을 비교한다.
+
+#### DQN·정책 경사·PPO — 핵심
+
+- [ ] DQN 부분을 읽고, Replay Buffer와 Target Network가 필요한 이유를 각각 적는다.
+- [ ] [DQN](https://arxiv.org/abs/1312.5602)의 알고리즘을 읽고, 수집→저장→표본 추출→TD 갱신 순서를 그린다.
+- [ ] CartPole 환경과 Replay Buffer를 구성하고, 표본 배치·종료 플래그·TD target을 확인한다.
+- [ ] Q-network와 Target Network 갱신을 구현하고, 한 번의 손실 계산·역전파를 확인한다.
+- [ ] DQN을 고정 시드로 짧게 학습하고, 보상 곡선과 탐욕적 평가 결과를 저장한다.
+- [ ] [REINFORCE](https://link.springer.com/article/10.1007/BF00992696)의 정책 경사 추정식을 읽고, 짧은 궤적의 return과 손실을 계산한다.
+- [ ] CartPole용 REINFORCE를 구현하고, 짧은 실행의 보상 곡선을 저장한다.
+- [ ] Actor-Critic 부분을 읽고, TD error로 actor·critic의 손실을 계산하는 예제를 작성한다.
+- [ ] [PPO](https://arxiv.org/abs/1707.06347)의 clipped objective를 읽고, advantage의 부호별 목적함수 그래프를 그린다.
+- [ ] PPO의 rollout 저장과 GAE 계산을 구현하고, 짧은 궤적을 수작업 결과와 비교한다.
+- [ ] PPO의 정책·가치 손실과 미니배치 갱신을 구현하고, CartPole에서 짧은 실행을 확인한다.
+- [ ] DQN과 PPO를 같은 환경 상호작용 예산으로 실행하고, 시드 1의 평가 보상을 저장한다.
+- [ ] 같은 비교를 시드 2로 실행하고 평가 보상을 저장한다.
+- [ ] 같은 비교를 시드 3으로 실행하고 평가 보상을 저장한다.
+- [ ] 세 시드의 평균·변동성·실행 시간을 비교하고, 가치 기반 방법과 정책 기반 방법의 차이를 1쪽으로 정리한다.
+
+**확장**
+
+- [ ] [Rainbow](https://arxiv.org/abs/1710.02298)의 구성 요소와 Ablation 표 하나를 읽고, DQN에 추가해 볼 요소 하나를 고른다.
+- [ ] [A3C](https://arxiv.org/abs/1602.01783)의 비동기 Actor-Critic 절차를 읽고, 단일 환경 학습과의 차이를 그린다.
+- [ ] [SAC](https://arxiv.org/abs/1801.01290)의 최대 엔트로피 목적함수를 읽고, PPO와 목적·행동공간·데이터 재사용 방식을 비교한다.
+
+### 4. 생성 모델: VAE·GAN·Diffusion·Flow Matching
+
+**교재:** 밑시딥 5권 1~10장 · 핸즈온 18장
+
+#### 확률모형과 VAE — 핵심
+
+- [ ] 확률분포·기댓값 부분을 읽고, 1차원 Gaussian의 밀도와 표본 히스토그램을 그린다.
+- [ ] 최대가능도 부분을 읽고, Gaussian 평균·분산의 추정값을 작은 데이터로 계산한다.
+- [ ] 잠재변수와 EM 부분을 읽고, 1차원 Gaussian mixture에서 E-step·M-step 한 회를 계산한다.
+- [ ] KL divergence와 ELBO 부분을 읽고, log likelihood와 ELBO의 관계를 전개한다.
+- [ ] [VAE](https://arxiv.org/abs/1312.6114)의 목적함수와 Reparameterization 부분을 읽고, 인코더·디코더·손실을 연결해 그린다.
+- [ ] MNIST용 작은 VAE와 reconstruction·KL 손실을 구현하고, 한 배치의 기울기를 확인한다.
+- [ ] VAE를 짧게 학습하고, 원본·복원·잠재변수 표본의 이미지 그리드를 저장한다.
+- [ ] 잠재공간 보간을 수행하고, likelihood·KL·ELBO와 관찰 결과를 1쪽으로 정리한다.
+- [ ] **확장:** [EM 원 논문](https://doi.org/10.1111/j.2517-6161.1977.tb01600.x)의 알고리즘 설명을 읽고, 교재의 Gaussian mixture 갱신과 대응시킨다.
+- [ ] **확장:** [GAN](https://arxiv.org/abs/1406.2661)의 minimax 목적과 학습 절차를 읽고, VAE와 손실·표본 생성 방식을 비교한다.
+
+#### Diffusion과 샘플링 — 핵심
+
+- [ ] 전방 확산 부분을 읽고, 같은 MNIST 이미지에 시점별 노이즈를 더한 그리드를 만든다.
+- [ ] [DDPM](https://arxiv.org/abs/2006.11239)의 학습 목적을 읽고, 노이즈 예측 손실의 입력·정답·시점 표본 추출을 정리한다.
+- [ ] DDPM의 역방향 샘플링 알고리즘을 읽고, 한 스텝의 평균·분산·노이즈 항을 표시한다.
+- [ ] 작은 노이즈 예측 모델에 시점 임베딩을 연결하고, 한 배치의 학습 손실을 확인한다.
+- [ ] 28×28 MNIST 일부에서 DDPM을 짧게 학습하고, 손실과 설정·체크포인트를 저장한다.
+- [ ] DDPM 샘플러를 구현하고, 고정된 초기 노이즈에서 생성한 샘플 16개를 저장한다.
+- [ ] [DDIM](https://arxiv.org/abs/2010.02502)의 샘플링 식을 읽고, DDPM과의 차이 및 확률성 제어 항을 정리한다.
+- [ ] 같은 체크포인트에 DDIM 샘플러를 연결하고, 적은 단계 수로 샘플이 생성되는지 확인한다.
+- [ ] 동일한 초기 노이즈에서 DDPM·DDIM과 단계 수 2가지를 비교하고 시간·샘플 그리드를 저장한다.
+- [ ] [Latent Diffusion](https://arxiv.org/abs/2112.10752)의 구조 부분을 읽고, Autoencoder·잠재 확산·조건 주입 경로를 그린다.
+- [ ] 같은 논문의 실험 표 하나를 읽고, 픽셀 공간 대비 효율·품질의 비교 조건을 정리한다.
+- [ ] 샘플링 속도·품질 관찰과 축소 실험의 한계를 1쪽으로 정리한다.
+- [ ] **확장:** [DiT](https://arxiv.org/abs/2212.09748)의 블록 구조와 결과 그림 하나를 읽고, 기존 노이즈 예측 모델과의 차이를 적는다.
+- [ ] **확장:** [Flow Matching](https://arxiv.org/abs/2210.02747)의 학습 목적을 읽고, 예측 대상과 생성 경로를 Diffusion과 비교한다.
+
+### 5. 현대 LLM: 사전학습·SFT·선호도 학습
+
+**교재:** 밑시딥 6권 1~3·6장 · 핸즈온 15장
+
+#### Tokenizer·GPT·Scaling — 핵심
+
+- [ ] 토큰화 부분과 [BPE 논문](https://arxiv.org/abs/1508.07909)의 병합 절차를 읽고, 작은 단어 목록에 병합 5회를 손으로 적용한다.
+- [ ] 작은 말뭉치용 BPE 학습·인코딩·디코딩을 구현하고, 원문 복원과 미등록 입력 처리를 확인한다.
+- [ ] [GPT-2](https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf)의 모델·학습 부분을 읽고, 다음 토큰 예측 데이터와 손실을 정리한다.
+- [ ] 앞서 만든 Mini-Transformer에 BPE 데이터와 train/validation 분할을 연결하고, 한 배치 학습을 확인한다.
+- [ ] Mini-GPT를 고정된 토큰 예산으로 짧게 사전학습하고, 검증 손실과 생성 예시를 저장한다.
+- [ ] [GPT-3](https://arxiv.org/abs/2005.14165)의 few-shot 평가 부분과 결과 표 하나를 읽고, zero/one/few-shot 프롬프트 예시를 작성한다.
+- [ ] [Chinchilla](https://arxiv.org/abs/2203.15556)의 연산 예산·모델 크기·토큰 수 관계를 읽고, 대표 그래프 하나를 설명한다.
+- [ ] Mini-GPT 크기 2개를 같은 토큰 예산으로 실행하고, 파라미터 수·검증 손실·시간을 기록한다.
+- [ ] 한 모델 크기를 고정하고 학습 토큰 예산 2개를 비교해 검증 손실을 기록한다.
+- [ ] 두 비교의 통제 조건과 한계를 구분하고, 소규모 관찰을 대규모 Scaling Law로 일반화할 수 없는 이유를 1쪽으로 정리한다.
+- [ ] **확장:** [Scaling Laws](https://arxiv.org/abs/2001.08361)의 주요 관계식과 그래프 하나를 읽고, Chinchilla와의 가정·결론 차이를 적는다.
+
+#### SFT·선호도 최적화·추론 RL — 핵심
+
+- [ ] [InstructGPT](https://arxiv.org/abs/2203.02155)의 SFT→보상모델→정책 최적화 절차를 읽고, 각 단계의 데이터를 표로 정리한다.
+- [ ] 작은 공개 모델과 지시 데이터 일부를 선택하고, 평가 질문 20개·채점 기준·데이터 분할을 고정한다.
+- [ ] 지시·응답 포맷과 응답 토큰 loss mask를 구성하고, 배치 하나의 학습 대상을 확인한다.
+- [ ] SFT를 짧게 실행하고, 설정·체크포인트·학습 손실을 저장한다.
+- [ ] Base·SFT 모델을 고정한 20개 질문으로 평가하고, 점수와 성공·실패 예시를 저장한다.
+- [ ] [DPO](https://arxiv.org/abs/2305.18290)의 선호도 목적함수를 읽고, chosen/rejected 및 reference model의 역할을 설명한다.
+- [ ] 작은 선호도 데이터에서 DPO 손실을 구현하고, 한 쌍의 log probability와 손실을 직접 계산한 값과 비교한다.
+- [ ] 같은 SFT 체크포인트에서 짧게 DPO 학습을 실행하고, 고정한 20개 질문의 평가 결과를 저장한다.
+- [ ] [DeepSeekMath](https://arxiv.org/abs/2402.03300)의 GRPO 부분을 읽고, 그룹 내 보상·advantage·목적함수를 정리한다.
+- [ ] 정답 검증이 가능한 산술 문제 20개와 보상 함수를 만들고, 정답·오답·형식 오류 예제를 확인한다.
+- [ ] 한 문제의 여러 응답에서 그룹 상대 advantage를 계산하고, 보상이 모두 같은 경우의 처리를 기록한다.
+- [ ] [DeepSeek-R1](https://arxiv.org/abs/2501.12948)의 학습 단계 설명을 읽고, 단계별 데이터·목적을 표로 정리한다.
+- [ ] 같은 논문의 평가 표 하나와 한계 부분을 읽고, 직접 검증해 보고 싶은 주장 하나를 적는다.
+- [ ] SFT·DPO 실험 결과와 GRPO 계산 예제를 묶어, 평가 한계와 후속 실험을 1쪽으로 정리한다.
+- [ ] **확장:** [DAPO](https://arxiv.org/abs/2503.14476)의 주요 변경점과 Ablation 표 하나를 읽고, GRPO와 비교할 조건을 적는다.
+
+### 6. LLM 효율화: LoRA·Attention·분산 학습
+
+**교재:** 밑시딥 6권 4~9장 · 핸즈온 11·15·17장, 부록 B
+
+#### 파라미터 효율적 학습 — 핵심
+
+- [ ] [LoRA](https://arxiv.org/abs/2106.09685)의 저랭크 갱신 부분을 읽고, 행렬 크기별 추가 파라미터 수를 계산한다.
+- [ ] Linear 계층에 LoRA를 구현하고, 초기 출력·동결 파라미터·학습 대상 파라미터 수를 확인한다.
+- [ ] 단일 장치에 전체 파인튜닝이 들어가는 작은 모델과 데이터 일부를 고르고, 두 학습 방식의 공통 설정을 고정한다.
+- [ ] 전체 파인튜닝을 짧게 실행하고, 검증 점수·학습 시간·최대 GPU 메모리를 기록한다.
+- [ ] 같은 조건의 LoRA 학습을 실행하고, 동일한 지표 및 학습 파라미터 수를 기록한다.
+- [ ] 두 결과를 표로 비교하고, 적용 계층·rank·비용의 관계를 1쪽으로 정리한다.
+- [ ] **확장:** 양자화 부분과 [QLoRA](https://arxiv.org/abs/2305.14314)의 방법을 읽고, 저장 정밀도·계산 정밀도·학습 대상의 차이를 정리한다.
+
+#### 효율적 아키텍처와 시스템 — 핵심
+
+- [ ] [RoPE](https://arxiv.org/abs/2104.09864)의 위치 표현 수식을 읽고, 2차원 벡터 회전 예제로 상대 위치 관계를 계산한다.
+- [ ] RoPE를 구현하고, 회전 전후 norm 및 위치별 Attention score를 작은 입력으로 검증한다.
+- [ ] KV Cache 부분을 읽고, 토큰 추가 시 저장·재사용하는 텐서와 shape을 그린다.
+- [ ] Mini-GPT에 KV Cache를 구현하고, eval 모드에서 캐시 유무에 따른 다음 토큰 logits가 허용 오차 내에서 같은지 확인한다.
+- [ ] [GQA](https://arxiv.org/abs/2305.13245)의 head 공유 방식을 읽고, MHA·MQA·GQA의 KV Cache 크기를 계산한다.
+- [ ] [FlashAttention](https://arxiv.org/abs/2205.14135)의 타일링·메모리 접근 설명을 읽고, 일반 Attention과 중간 텐서 저장 방식을 비교한다.
+- [ ] 같은 논문의 벤치마크 표 하나를 읽고, 하드웨어·입력 길이·정밀도가 비교 결과에 주는 조건을 적는다.
+- [ ] 고정한 모델·배치·정밀도에서 입력 길이 3개와 KV Cache 유무별 Prefill·Decode 시간 및 최대 메모리를 측정한다.
+- [ ] [ZeRO](https://arxiv.org/abs/1910.02054)의 단계별 분할 방식을 읽고, 파라미터·기울기·옵티마이저 상태의 저장 위치를 그린다.
+- [ ] 분산 학습 부분을 읽고, 가상 모델 하나의 단일 장치·데이터 병렬·ZeRO 메모리 예산을 계산한다.
+- [ ] Attention 병목 측정 결과와 다중 GPU가 필요한 조건을 1쪽으로 정리한다.
+
+**확장**
+
+- [ ] [Switch Transformers](https://arxiv.org/abs/2101.03961)의 routing·load balancing 부분을 읽고, 토큰이 expert에 배정되는 작은 예제를 그린다.
+- [ ] [Muon](https://arxiv.org/abs/2502.16982)의 갱신 절차를 읽고, Adam과 상태·행렬 연산·적용 대상의 차이를 적는다.
+- [ ] [The Polar Express](https://proceedings.iclr.cc/paper_files/paper/2026/hash/df88b275bef31ac96c85f0c4013734fc-Abstract-Conference.html)의 핵심 방법과 결과 표 하나를 읽고, Muon 관련 계산에서 확인할 질문 하나를 적는다.
+
+### 7. 멀티모달·음성·RAG·Agent
+
+**교재:** 핸즈온 16장, 15장 확장 학습
+
+#### 시각·언어 표현 — 핵심
+
+- [ ] Vision Transformer 부분을 읽고, 이미지 한 장의 패치 분할과 토큰 shape을 계산한다.
+- [ ] [ViT](https://arxiv.org/abs/2010.11929)의 모델 구조와 대표 실험 표 하나를 읽고, CNN과의 차이를 적는다.
+- [ ] Patch Embedding을 구현하고, 이미지→토큰→Transformer 입력의 shape을 검증한다.
+- [ ] [CLIP](https://arxiv.org/abs/2103.00020)의 대조학습 목적을 읽고, 작은 배치의 이미지·텍스트 유사도 행렬과 정답 위치를 표시한다.
+- [ ] 공개된 작은 CLIP 모델로 이미지 100장 이내의 임베딩을 추출하고, 라벨 프롬프트를 고정한다.
+- [ ] Zero-shot 분류 정확도와 오분류 사례 최대 5개를 저장하고, 같은 임베딩으로 텍스트 질의 5개의 검색 결과를 비교한다.
+- [ ] 프롬프트 2종의 결과를 비교하고, 표현학습의 장점과 데이터·평가 한계를 1쪽으로 정리한다.
+
+#### 선택 확장
+
+- [ ] [BLIP-2](https://arxiv.org/abs/2301.12597)의 연결 모듈과 학습 단계를 읽고, 동결·학습하는 부분을 표시한다.
+- [ ] [DINOv2](https://arxiv.org/abs/2304.07193)의 학습 개요와 평가 표 하나를 읽고, CLIP과 감독 신호·평가 방식을 비교한다.
+- [ ] [Segment Anything](https://arxiv.org/abs/2304.02643)의 프롬프트·마스크 출력 구조를 읽고, 입력 유형별 사용 예를 적는다.
+- [ ] [Whisper](https://arxiv.org/abs/2212.04356)의 학습 데이터·평가 부분을 읽고, 전사 오류를 분류할 기준을 정한다.
+- [ ] 짧은 음성 5개의 전사와 정답을 준비하고, WER 및 주요 오류 유형을 기록한다.
+- [ ] [RAG](https://arxiv.org/abs/2005.11401)의 검색·생성 절차를 읽고, 검색 오류와 생성 오류를 구분할 평가표를 만든다.
+- [ ] 문서 20개 이내와 질문 10개로 작은 검색 인덱스를 구성하고, top-k 검색의 정답 문서 포함 여부를 기록한다.
+- [ ] 같은 질문에 검색 없이·검색 결과를 넣어 답변을 생성하고, 정답률·근거 일치 여부를 기록한다.
+- [ ] 전사문 5개의 정답·실제 전사 버전을 각각 검색 입력으로 사용하고, 후속 정보 추출 또는 RAG 결과 변화를 기록한다.
+- [ ] [ReAct](https://arxiv.org/abs/2210.03629)의 도구 사용 절차와 실패 사례를 읽고, 도구 결과가 잘못됐을 때의 평가 항목을 적는다.
+- [ ] 고정된 읽기 전용 도구 하나로 질의 5개를 실행하고, 도구 선택·결과 해석·최종 답변 오류를 구분한다.
+- [ ] 음성·검색·도구 사용 중 관찰한 실패 사례와 신뢰성 개선 가설을 1쪽으로 정리한다.
+
+## 산출물 및 학습 자료
+
+### 산출물
+
+아래는 생성할 산출물의 권장 위치다. 파일을 만든 뒤 실제 상대경로 링크를 추가한다. 학습 노트는 주제별로, 실험은 실행별 설정과 결과를 함께 남긴다.
+
+| 산출물 | 권장 위치 | 담을 내용 |
 |---|---|---|
-| 교재 | 원리·직관·선수지식 정립 | 핵심 수식을 설명하고 예제를 직접 수정할 수 있음 |
-| 논문 | 학술적 문제 정의와 기여 이해 | 문제, 방법, Baseline, 결과, 한계를 자신의 언어로 정리 |
-| 구현 | 모델과 알고리즘 내부 이해 | 작은 입력에 대해 동작 검증, 최소 1개 테스트 작성 |
-| 실험 | 주장 검증 및 비교 | 동일 데이터·평가 기준으로 Baseline과 비교, 결과 기록 |
-| 보고서 | 지식 정착 및 연구 질문 발굴 | 관찰 결과, 실패 사례, 후속 가설 1개 이상 포함 |
+| 개념·교재 노트 | `notes/{fundamentals,vision,nlp,rl,generative,llm}/` | 수식, 계산 예제, 오해한 점, 1쪽 정리 |
+| 논문 리뷰 | `paper-reviews/` | 문제, 방법, 주요 실험, 한계, 후속 질문 |
+| 핵심 구현 | `implementations/` | 계층·모델·알고리즘 코드와 작은 입력 검증 |
+| 비교 실험 | `experiments/` | 실행 설정, 지표, 곡선, 샘플, 실패 기록 |
+| 연구 제안서 | `research/proposal.md` | 연구 질문, 가설, 데이터, Baseline, 예산 |
+| 최종 연구 보고서 | `research/final-report.md` | 비교·Ablation 결과, 실패 사례, 재현 절차 |
 
-### 체크박스 운영 규칙
+### 교재
 
-- **[ ] → [x]**: *실제로 수행하고 결과물을 남긴 경우*에만 체크한다.
-- 한 논문을 **읽는 것**과 **실험으로 검증하는 것**은 별개 작업으로 관리한다.
-- `**[핵심]**`은 우선 완료할 항목, `**[확장]**`은 관심 분야 탐색용 항목이다.
-- 모든 논문을 정밀 재현할 필요는 없다. 각 주제에서 **대표 논문을 최소 한 편 깊게** 다룬다.
-- 아래 순서는 *개념 의존성에 따른 권장 순서*이며, **학습 기간이나 마감일을 지정하지 않는다.**
+| 교재 | 학습 범위 | 현재 상태 |
+|---|---|---|
+| 밑바닥부터 시작하는 딥러닝 1 | 역전파·최적화·CNN | 1회독 완료, 복습 예정 |
+| 밑바닥부터 시작하는 딥러닝 2 | 단어 표현·RNN·Attention | 미시작 |
+| 밑바닥부터 시작하는 딥러닝 4 | 강화학습·Deep RL | 미시작 |
+| 밑바닥부터 시작하는 딥러닝 5 | 확률모형·VAE·Diffusion | 미시작 |
+| 밑바닥부터 시작하는 딥러닝 6 | GPT·사전학습·SFT·GRPO·효율화 | 미시작 |
+| [Hands-On Machine Learning with Scikit-Learn and PyTorch](https://www.oreilly.com/library/view/hands-on-machine-learning/9798341607972/) | 9~19장 중심, 필요한 부록 참고 | 미시작 |
 
----
+### 참고 자료
 
-## 3. 학습 체크리스트
+논문·기술 보고서 링크는 해당 학습·연구 체크에 모았다.
 
-### 3.1 딥러닝 기초: 역전파·최적화·CNN
-
-**연계 교재:** 밑시딥 1권 · 핸즈온 9~12장, 부록 A(자동미분)
-
-#### 신경망과 역전파
-
-- [ ] **[핵심]** 밑시딥 1권 4~5장, 핸즈온 9~10장: 손실함수·수치미분·계산 그래프·오차역전파 복습
-- [ ] **[핵심]** [Learning Representations by Back-Propagating Errors](https://doi.org/10.1038/323533a0) 논문 학습
-- [ ] Affine, ReLU, SoftmaxWithLoss 계층의 Forward/Backward를 NumPy로 구현
-- [ ] 수치미분과 역전파 기울기를 비교하는 Gradient Check 실습
-- [ ] 학습 정리 보고서 작성: 연쇄법칙, 계산 그래프, Gradient Check 오차
-
-#### 최적화와 일반화
-
-- [ ] **[핵심]** 밑시딥 1권 6장, 핸즈온 11장: SGD, Momentum, Adam, 초기화, 정규화 학습
-- [ ] **[핵심]** [Adam: A Method for Stochastic Optimization](https://arxiv.org/abs/1412.6980) 논문 학습
-- [ ] **[확장]** [Batch Normalization](https://arxiv.org/abs/1502.03167) 논문 학습
-- [ ] **[확장]** [Dropout](https://jmlr.org/papers/v15/srivastava14a.html) 논문 학습
-- [ ] **[확장]** [Super-Convergence](https://arxiv.org/abs/1708.07120) 논문 학습
-- [ ] 동일 모델·데이터에서 SGD, Momentum, Adam의 수렴 속도와 검증 손실 비교
-- [ ] PyTorch 학습 파이프라인 구현: DataLoader, train/validation/test, 체크포인트, 시드, 지표 기록
-- [ ] 학습 정리 보고서 작성: 옵티마이저·학습률·과적합·실험 결과
-
-#### CNN과 잔차 연결
-
-- [ ] **[핵심]** 밑시딥 1권 7장, 핸즈온 12장: 합성곱·풀링·CNN 구조 학습
-- [ ] **[확장]** [AlexNet](https://proceedings.neurips.cc/paper/2012/hash/c399862d3b9d6b76c8436e924a68c45b-Abstract.html) 논문 학습
-- [ ] **[핵심]** [Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385) 논문 학습
-- [ ] CNN과 Residual Block을 PyTorch로 구현
-- [ ] 일반 CNN과 ResNet 계열의 학습 곡선·기울기 흐름 비교
-- [ ] 학습 정리 보고서 작성: CNN 특징, 잔차 연결의 역할, 실험 결과
-
-### 3.2 NLP의 발전: 단어 표현·RNN·Attention·Transformer
-
-**연계 교재:** 밑시딥 2권 · 핸즈온 13~15장
-
-#### Word Embedding
-
-- [ ] **[핵심]** 밑시딥 2권 2~4장: 말뭉치, 분산 표현, CBOW, Skip-gram, Negative Sampling 학습
-- [ ] **[핵심]** [Efficient Estimation of Word Representations in Vector Space](https://arxiv.org/abs/1301.3781) 논문 학습
-- [ ] **[확장]** [GloVe](https://aclanthology.org/D14-1162/) 논문 학습
-- [ ] 단어 임베딩 학습 후 유사도·유추 연산 실습
-- [ ] 학습 정리 보고서 작성: 분산 표현의 가정과 한계
-
-#### RNN, LSTM, Seq2Seq
-
-- [ ] **[핵심]** 밑시딥 2권 5~7장, 핸즈온 13~14장: RNN, LSTM, Encoder–Decoder 학습
-- [ ] **[확장]** [Generating Sequences with Recurrent Neural Networks](https://arxiv.org/abs/1308.0850) 논문 학습
-- [ ] **[핵심]** [Long Short-Term Memory](https://www.bioinf.jku.at/publications/older/2604.pdf) 논문 학습
-- [ ] **[핵심]** [Sequence to Sequence Learning with Neural Networks](https://arxiv.org/abs/1409.3215) 논문 학습
-- [ ] 작은 시퀀스 문제에서 RNN/LSTM/Seq2Seq 구현 및 성능 비교
-- [ ] 학습 정리 보고서 작성: 장기 의존성, 기울기 소실, Encoder–Decoder
-
-#### Attention에서 Transformer까지
-
-- [ ] **[핵심]** 밑시딥 2권 8장, 핸즈온 14~15장: Attention·Transformer 학습
-- [ ] **[핵심]** [Neural Machine Translation by Jointly Learning to Align and Translate](https://arxiv.org/abs/1409.0473) 논문 학습
-- [ ] **[핵심]** [Attention Is All You Need](https://arxiv.org/abs/1706.03762) 논문 정독
-- [ ] Bahdanau Attention과 Scaled Dot-Product Attention을 직접 구현
-- [ ] Multi-Head Attention, Positional Encoding, Masking 구현 및 Tensor Shape 검증
-- [ ] 기본 Seq2Seq와 Attention-Seq2Seq 비교, Attention 가중치 시각화
-- [ ] 작은 Decoder-only Transformer를 학습해 텍스트 생성
-- [ ] 학습 정리 보고서 작성: RNN→Attention→Transformer로 발전한 이유
-
-### 3.3 강화학습: 가치 기반에서 정책 최적화까지
-
-**연계 교재:** 밑시딥 4권 · 핸즈온 19장
-
-#### 강화학습 기초와 가치 기반 방법
-
-- [ ] **[핵심]** 밑시딥 4권 1~6장: MDP, 벨만 방정식, Monte Carlo, TD, Q-Learning 학습
-- [ ] **[확장]** [Finite-time Analysis of the Multiarmed Bandit Problem](https://link.springer.com/article/10.1023/A:1013689704352) 논문 학습
-- [ ] **[핵심]** [Q-learning](https://link.springer.com/article/10.1007/BF00992698) 논문 학습
-- [ ] GridWorld에서 Dynamic Programming/TD/Q-Learning 구현
-- [ ] 학습 정리 보고서 작성: 가치함수, 탐색·활용, Bellman Update
-
-#### Deep RL 및 정책 경사
-
-- [ ] **[핵심]** 밑시딥 4권 7~10장 및 핸즈온 19장: DQN, REINFORCE, Actor-Critic, PPO 학습
-- [ ] **[핵심]** [Playing Atari with Deep Reinforcement Learning](https://arxiv.org/abs/1312.5602) 논문 학습
-- [ ] **[확장]** [Rainbow](https://arxiv.org/abs/1710.02298) 논문 학습
-- [ ] **[핵심]** [Simple Statistical Gradient-Following Algorithms for Connectionist Reinforcement Learning](https://link.springer.com/article/10.1007/BF00992696) 논문 학습
-- [ ] **[확장]** [Asynchronous Methods for Deep Reinforcement Learning](https://arxiv.org/abs/1602.01783) 논문 학습
-- [ ] **[핵심]** [Proximal Policy Optimization Algorithms](https://arxiv.org/abs/1707.06347) 논문 학습
-- [ ] **[확장]** [Soft Actor-Critic](https://arxiv.org/abs/1801.01290) 논문 학습
-- [ ] CartPole/LunarLander에서 DQN 또는 PPO 구현·학습
-- [ ] 여러 시드로 보상·샘플 효율·분산 비교 및 학습 곡선 기록
-- [ ] 학습 정리 보고서 작성: Value-based vs Policy-based, PPO Clipping
-
-### 3.4 생성 모델: VAE·GAN·Diffusion·Flow Matching
-
-**연계 교재:** 밑시딥 5권 · 핸즈온 18장
-
-#### 확률모형과 잠재변수
-
-- [ ] **[핵심]** 밑시딥 5권 1~7장: 확률분포, 최대가능도, EM, 잠재변수, VAE 학습
-- [ ] **[확장]** [Maximum Likelihood from Incomplete Data via the EM Algorithm](https://doi.org/10.1111/j.2517-6161.1977.tb01600.x) 논문 학습
-- [ ] **[핵심]** [Auto-Encoding Variational Bayes](https://arxiv.org/abs/1312.6114) 논문 학습
-- [ ] **[확장]** [Generative Adversarial Nets](https://arxiv.org/abs/1406.2661) 논문 학습
-- [ ] VAE의 Reparameterization Trick와 ELBO를 설명하고 작은 데이터셋에서 구현
-- [ ] 학습 정리 보고서 작성: Likelihood, KL Divergence, ELBO
-
-#### Diffusion과 효율적 샘플링
-
-- [ ] **[핵심]** 밑시딥 5권 8~10장, 핸즈온 18장: Diffusion의 전방·역방향 과정 학습
-- [ ] **[핵심]** [Denoising Diffusion Probabilistic Models](https://arxiv.org/abs/2006.11239) 논문 학습
-- [ ] **[핵심]** [Denoising Diffusion Implicit Models](https://arxiv.org/abs/2010.02502) 논문 학습
-- [ ] **[핵심]** [High-Resolution Image Synthesis with Latent Diffusion Models](https://arxiv.org/abs/2112.10752) 논문 학습
-- [ ] **[확장]** [Scalable Diffusion Models with Transformers (DiT)](https://arxiv.org/abs/2212.09748) 논문 학습
-- [ ] **[확장]** [Flow Matching for Generative Modeling](https://arxiv.org/abs/2210.02747) 논문 학습
-- [ ] 작은 이미지 데이터셋에서 DDPM의 노이즈 예측 학습 구현
-- [ ] 같은 모델에 DDPM/DDIM 샘플러를 적용해 단계 수·속도·품질 비교
-- [ ] 생성 샘플 그리드·측정 지표·실험 설정 저장
-- [ ] 학습 정리 보고서 작성: Diffusion 샘플링의 병목 및 새로운 가설
-
-### 3.5 현대 LLM: GPT·사전학습·SFT·선호도 학습
-
-**연계 교재:** 밑시딥 6권 1~6장 · 핸즈온 15장
-
-#### Tokenizer, GPT 및 Scaling
-
-- [ ] **[핵심]** 밑시딥 6권 1~3장: BPE, GPT 구조, 사전학습 학습
-- [ ] **[핵심]** [Neural Machine Translation of Rare Words with Subword Units](https://arxiv.org/abs/1508.07909) 논문 학습
-- [ ] **[핵심]** [Language Models are Unsupervised Multitask Learners (GPT-2)](https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf) 보고서 학습
-- [ ] **[핵심]** [Language Models are Few-Shot Learners (GPT-3)](https://arxiv.org/abs/2005.14165) 논문 학습
-- [ ] **[확장]** [Scaling Laws for Neural Language Models](https://arxiv.org/abs/2001.08361) 논문 학습
-- [ ] **[핵심]** [Training Compute-Optimal Large Language Models (Chinchilla)](https://arxiv.org/abs/2203.15556) 논문 학습
-- [ ] BPE 토크나이저와 Mini-GPT 사전학습 파이프라인 구현
-- [ ] 모델 크기·학습 토큰 수에 따른 작은 규모의 손실 변화 비교
-- [ ] 학습 정리 보고서 작성: Tokenizer, Causal LM, Scaling Law
-
-#### SFT, Preference Optimization, Reasoning RL
-
-- [ ] **[핵심]** 밑시딥 6권 3·6장, 핸즈온 15장: SFT, RLHF, DPO, GRPO 학습
-- [ ] **[핵심]** [Training Language Models to Follow Instructions with Human Feedback (InstructGPT)](https://arxiv.org/abs/2203.02155) 논문 학습
-- [ ] **[핵심]** [Direct Preference Optimization](https://arxiv.org/abs/2305.18290) 논문 학습
-- [ ] **[핵심]** [DeepSeekMath](https://arxiv.org/abs/2402.03300) 논문 학습: GRPO 도출·목적함수
-- [ ] **[핵심]** [DeepSeek-R1](https://arxiv.org/abs/2501.12948) 논문 학습
-- [ ] **[확장]** [DAPO](https://arxiv.org/abs/2503.14476) 논문 학습
-- [ ] 작은 공개 모델로 SFT 실험 및 Base/SFT 모델 평가 비교
-- [ ] 검증 가능한 보상을 이용한 소규모 GRPO 또는 DPO 실험 설계·수행
-- [ ] 학습 정리 보고서 작성: SFT vs Preference Learning vs RL, 평가 한계
-
-### 3.6 LLM 효율화: LoRA·RoPE·Attention·분산 학습
-
-**연계 교재:** 밑시딥 6권 4~9장 · 핸즈온 11·15·17장 및 부록 B
-
-#### 파라미터 효율적 학습
-
-- [ ] **[핵심]** 핸즈온 15장 파인튜닝 및 부록 B 양자화 학습
-- [ ] **[핵심]** [LoRA: Low-Rank Adaptation of Large Language Models](https://arxiv.org/abs/2106.09685) 논문 학습
-- [ ] **[확장]** [QLoRA](https://arxiv.org/abs/2305.14314) 논문 학습
-- [ ] Full Fine-tuning과 LoRA를 동일 조건에서 비교 (성능·학습 시간·GPU 메모리)
-- [ ] 학습 정리 보고서 작성: Low Rank, Quantization, PEFT의 장단점
-
-#### 효율적 아키텍처와 시스템
-
-- [ ] **[핵심]** 밑시딥 6권 5·8~9장, 핸즈온 17장: RoPE, GQA, KV Cache, MoE, 분산 학습 학습
-- [ ] **[핵심]** [RoFormer / RoPE](https://arxiv.org/abs/2104.09864) 논문 학습
-- [ ] **[핵심]** [FlashAttention](https://arxiv.org/abs/2205.14135) 논문 학습
-- [ ] **[핵심]** [GQA](https://arxiv.org/abs/2305.13245) 논문 학습
-- [ ] **[확장]** [Switch Transformers](https://arxiv.org/abs/2101.03961) 논문 학습
-- [ ] **[핵심]** [ZeRO](https://arxiv.org/abs/1910.02054) 논문 학습
-- [ ] **[확장]** [Muon is Scalable for LLM Training](https://arxiv.org/abs/2502.16982) 논문 학습
-- [ ] **[확장]** [The Polar Express](https://proceedings.iclr.cc/paper_files/paper/2026/hash/df88b275bef31ac96c85f0c4013734fc-Abstract-Conference.html) 논문 학습
-- [ ] RoPE와 KV Cache를 직접 구현하고 출력을 검증
-- [ ] Prefill/Decode 시퀀스 길이에 따른 시간·메모리 측정
-- [ ] 학습 정리 보고서 작성: Attention의 계산·메모리 병목, 분산 학습의 조건
-
-### 3.7 멀티모달·음성·RAG·Agent
-
-**연계 교재:** 핸즈온 16장 및 15장 확장 학습
-
-- [ ] **[핵심]** 핸즈온 16장: Vision Transformer와 멀티모달 표현학습 학습
-- [ ] **[핵심]** [An Image Is Worth 16x16 Words (ViT)](https://arxiv.org/abs/2010.11929) 논문 학습
-- [ ] **[핵심]** [Learning Transferable Visual Models From Natural Language Supervision (CLIP)](https://arxiv.org/abs/2103.00020) 논문 학습
-- [ ] **[확장]** [BLIP-2](https://arxiv.org/abs/2301.12597) 논문 학습
-- [ ] **[확장]** [DINOv2](https://arxiv.org/abs/2304.07193) 논문 학습
-- [ ] **[확장]** [Segment Anything](https://arxiv.org/abs/2304.02643) 논문 학습
-- [ ] **[확장]** [Whisper: Robust Speech Recognition via Large-Scale Weak Supervision](https://arxiv.org/abs/2212.04356) 논문 학습
-- [ ] **[확장]** [Retrieval-Augmented Generation (RAG)](https://arxiv.org/abs/2005.11401) 논문 학습
-- [ ] **[확장]** [ReAct](https://arxiv.org/abs/2210.03629) 논문 학습
-- [ ] ViT 또는 CLIP의 특징 표현을 활용한 분류·검색 실험
-- [ ] 음성 전사 품질이 후속 정보 추출/RAG에 주는 영향 분석
-- [ ] 학습 정리 보고서 작성: 멀티모달 표현학습과 실제 Agent 신뢰성
-
-### 3.8 최신 연구 탐색 · 교재 밖 확장
-
-**목적:** 원 논문의 핵심 아이디어가 현재 연구에서 어떻게 확장·반박·개선되는지 확인한다.
-
-- [ ] **[확장]** [Qwen3 Technical Report](https://arxiv.org/abs/2505.09388): Thinking/Non-thinking 모델 연구
-- [ ] **[확장]** [s1: Simple Test-Time Scaling](https://arxiv.org/abs/2501.19393): Test-Time Compute 연구
-- [ ] **[확장]** [Large Language Diffusion Models (LLaDA)](https://arxiv.org/abs/2502.09992): Diffusion 기반 언어모델
-- [ ] **[확장]** [The Flexibility Trap](https://proceedings.mlr.press/v306/ni26e.html): Diffusion LM의 생성 순서와 RL
-- [ ] **[확장]** [LaDiR: Latent Diffusion Enhances LLMs for Text Reasoning](https://proceedings.iclr.cc/paper_files/paper/2026/hash/843e1d8ab4819c8c8a4221fce2c8d455-Abstract-Conference.html): 잠재공간 추론
-- [ ] **[확장]** [Qwen3.5-Omni Technical Report](https://arxiv.org/abs/2604.15804): 음성·영상·텍스트 통합
-- [ ] **[확장]** [LLMs Get Lost In Multi-Turn Conversation](https://arxiv.org/abs/2505.06120): 대화 안정성 평가
-- [ ] **[확장]** 최신 연구 가운데 2편 이상을 골라 기존 논문과 **연구 질문·방법·실험·한계** 비교
-- [ ] 최신 연구 리뷰 보고서 작성: 재현 가능한 아이디어와 필요한 자원 추정
-
-### 3.9 최종 연구 프로젝트
-
-- [ ] 관심 연구 분야 2~3개를 선정하고 관련 논문 지도를 작성
-- [ ] 후보 주제마다 **연구 질문, 가설, 데이터, 측정 지표, Baseline, 위험요인** 정리
-- [ ] 집중 연구 분야 1개 선정 및 연구 제안서 작성
-- [ ] 연구와 가장 가까운 논문 1편의 핵심 실험을 작은 규모로 재현
-- [ ] 고정된 데이터 분할, 랜덤 시드, 환경, 하이퍼파라미터 설정 관리
-- [ ] GPU 자원 사용 계획과 예상 메모리·학습 비용 산정
-- [ ] Baseline 및 제안 방법의 비교 실험 수행
-- [ ] 최소 1개의 Ablation 실험 수행
-- [ ] 정량 지표, 실패 사례, 재현 한계를 포함한 결과 분석
-- [ ] 환경 설치·실행 명령·데이터 준비·재현 절차를 README/보고서에 기록
-- [ ] 최종 연구 보고서 작성 및 GitHub에 산출물 연결
-
----
-
-## 4. 학습 기록·프로젝트·산출물 링크
-
-> 아래 경로는 **권장 저장 위치**다. 아직 파일이 없으므로 가짜 링크를 만들지 않았으며, 생성 후 `링크` 칸을 실제 Markdown 상대경로로 교체한다. 예: `[역전파 노트](notes/fundamentals/backpropagation.md)`.
-
-| 유형 | 주제 / 결과물 | 권장 저장 위치 | 링크 | 상태 |
-|---|---|---|---|---|
-| 학습 노트 | 오차역전파·자동미분 | `notes/fundamentals/backpropagation.md` | 추가 예정 | 복습 예정 |
-| 학습 노트 | 최적화·일반화 | `notes/fundamentals/optimization.md` | 추가 예정 | 미시작 |
-| 학습 노트 | CNN·ResNet | `notes/vision/cnn-resnet.md` | 추가 예정 | 미시작 |
-| 학습 노트 | NLP·Attention | `notes/nlp/attention-transformer.md` | 추가 예정 | 미시작 |
-| 학습 노트 | 강화학습·PPO | `notes/rl/policy-optimization.md` | 추가 예정 | 미시작 |
-| 학습 노트 | VAE·Diffusion | `notes/generative/diffusion.md` | 추가 예정 | 미시작 |
-| 학습 노트 | LLM·SFT·GRPO | `notes/llm/training-and-reasoning.md` | 추가 예정 | 미시작 |
-| 학습 노트 | LoRA·효율화 | `notes/llm/efficient-training.md` | 추가 예정 | 미시작 |
-| 논문 리뷰 | 개별 논문 요약 | `paper-reviews/` | 추가 예정 | 미시작 |
-| 구현 실습 | 핵심 알고리즘 재구현 | `implementations/` | 추가 예정 | 미시작 |
-| 비교 실험 | 재현 및 Ablation | `experiments/` | 추가 예정 | 미시작 |
-| 연구 제안서 | 독립 연구 주제 | `research/proposal.md` | 추가 예정 | 미시작 |
-| 최종 보고서 | 연구 결과 및 한계 | `research/final-report.md` | 추가 예정 | 미시작 |
-
-### 주요 참고 코드 및 공개 자료
-
-- [Hands-On Machine Learning with Scikit-Learn and PyTorch — 저자 실습 저장소](https://github.com/ageron/handson-mlp)
-- [PyTorch 공식 문서](https://pytorch.org/docs/stable/index.html)
-- [Hugging Face Transformers](https://huggingface.co/docs/transformers/index)
-- [Hugging Face PEFT](https://huggingface.co/docs/peft/index)
-- [Hugging Face TRL](https://huggingface.co/docs/trl/index)
+- [핸즈온 저자 실습 저장소](https://github.com/ageron/handson-mlp)
+- [PyTorch 공식 문서](https://pytorch.org/docs/stable/index.html) · [Tutorials](https://pytorch.org/tutorials/)
+- Hugging Face [Transformers](https://huggingface.co/docs/transformers/index) · [PEFT](https://huggingface.co/docs/peft/index) · [TRL](https://huggingface.co/docs/trl/index) · [Course](https://huggingface.co/learn)
 - [Gymnasium 공식 문서](https://gymnasium.farama.org/)
-- [Papers with Code](https://paperswithcode.com/)
-- [arXiv cs.LG](https://arxiv.org/list/cs.LG/recent) · [OpenReview](https://openreview.net/) · [PMLR](https://proceedings.mlr.press/)
+- 논문·구현 탐색: [arXiv cs.LG](https://arxiv.org/list/cs.LG/recent) · [OpenReview](https://openreview.net/) · [PMLR](https://proceedings.mlr.press/) · [Papers with Code](https://paperswithcode.com/)
 
----
+## 연구
 
-## 5. 교재·논문·아티클 라이브러리
+### 최근 연구 탐색 — 선택
 
-### 5.1 교재 목록
+아래 체크는 논문 전체 정독이 아닌 **초록·서론·핵심 방법 일부·대표 결과 하나를 읽는 첫 탐색**이다. 각 논문마다 연구 질문·방법·근거·한계를 5~10줄로 남기고, 자세히 읽을 부분을 표시한다.
 
-| 유형 | 자료 | 학습 범위 / 역할 | 학습 상태 | 정리 링크 |
-|---|---|---|---|---|
-| 도서 | 『밑바닥부터 시작하는 딥러닝 1』 | 오차역전파, 최적화, CNN | **기존 1회독 완료 · 복습 예정** | 추가 예정 |
-| 도서 | 『밑바닥부터 시작하는 딥러닝 2』 | NLP, 임베딩, RNN, Attention | 미시작 | 추가 예정 |
-| 도서 | 『밑바닥부터 시작하는 딥러닝 4』 | 강화학습과 Deep RL | 미시작 | 추가 예정 |
-| 도서 | 『밑바닥부터 시작하는 딥러닝 5』 | 확률적 생성 모델, VAE, Diffusion | 미시작 | 추가 예정 |
-| 도서 | 『밑바닥부터 시작하는 딥러닝 6』 | GPT, 사전학습, SFT, GRPO, 효율화 | 미시작 | 추가 예정 |
-| 도서 | [Hands-On Machine Learning with Scikit-Learn and PyTorch](https://www.oreilly.com/library/view/hands-on-machine-learning/9798341607972/) — Aurélien Géron | **9~19장**, 필요한 경우 1~8장 및 부록 | 미시작 | 추가 예정 |
+- [ ] [Qwen3 Technical Report](https://arxiv.org/abs/2505.09388): Thinking/Non-thinking 설정을 중심으로 탐색 기록을 작성한다.
+- [ ] [s1: Simple Test-Time Scaling](https://arxiv.org/abs/2501.19393): 추론 시간 연산량과 평가 조건을 중심으로 탐색 기록을 작성한다.
+- [ ] [LLaDA](https://arxiv.org/abs/2502.09992): Diffusion 기반 언어모델의 학습·생성 방식을 중심으로 탐색 기록을 작성한다.
+- [ ] [The Flexibility Trap](https://proceedings.mlr.press/v306/ni26e.html): Diffusion LM의 생성 순서와 RL에 대한 주장을 중심으로 탐색 기록을 작성한다.
+- [ ] [LaDiR](https://proceedings.iclr.cc/paper_files/paper/2026/hash/843e1d8ab4819c8c8a4221fce2c8d455-Abstract-Conference.html): 잠재공간 추론의 구조와 평가를 중심으로 탐색 기록을 작성한다.
+- [ ] [Qwen3.5-Omni Technical Report](https://arxiv.org/abs/2604.15804): 음성·영상·텍스트 통합과 평가를 중심으로 탐색 기록을 작성한다.
+- [ ] [LLMs Get Lost In Multi-Turn Conversation](https://arxiv.org/abs/2505.06120): 대화 안정성의 평가 설정과 실패 사례를 중심으로 탐색 기록을 작성한다.
+- [ ] 탐색한 논문 중 2편을 골라 연구 질문·방법·평가 조건·한계를 표 하나로 비교한다.
+- [ ] 비교한 논문에서 재현 후보 하나를 고르고, 필요한 데이터·모델·GPU 메모리를 대략 추정한다.
 
-*3권은 이번 학습 경로에서 제외. 상태와 정리 링크는 학습 후 갱신한다.*
+### 독립 연구 프로젝트
 
-### 5.2 논문·기술 보고서 인덱스
+연구 실행도 하루 작업 단위로 관리한다. 아래 실험 체크는 **한 번의 축소 실행**을 뜻한다. 실행당 최대 60분으로 먼저 동작을 확인하고, 본 실험이 더 길면 시드·조건·학습 구간별 체크를 추가한다.
 
-표는 **참고 문헌 목록**이며, 실제 완료 여부는 [3. 학습 체크리스트](#3-학습-체크리스트)의 체크박스로 관리한다. `핵심`은 우선순위, `확장`은 선택 심화다.
+#### 주제 선정
 
-| 분야 | 논문 / 보고서 | 연결 주제 | 우선순위 |
-|---|---|---|---|
-| 기초 | [Learning Representations by Back-Propagating Errors](https://doi.org/10.1038/323533a0) | 역전파 | 핵심 |
-| 기초 | [Adam](https://arxiv.org/abs/1412.6980) | 최적화 | 핵심 |
-| 기초 | [Batch Normalization](https://arxiv.org/abs/1502.03167) | 학습 안정성 | 확장 |
-| 기초 | [Dropout](https://jmlr.org/papers/v15/srivastava14a.html) | 일반화 | 확장 |
-| 기초 | [Super-Convergence](https://arxiv.org/abs/1708.07120) | 학습률 | 확장 |
-| CNN | [AlexNet](https://proceedings.neurips.cc/paper/2012/hash/c399862d3b9d6b76c8436e924a68c45b-Abstract.html) | CNN | 확장 |
-| CNN | [ResNet](https://arxiv.org/abs/1512.03385) | 잔차 연결 | 핵심 |
-| NLP | [word2vec](https://arxiv.org/abs/1301.3781) | 임베딩 | 핵심 |
-| NLP | [GloVe](https://aclanthology.org/D14-1162/) | 임베딩 | 확장 |
-| NLP | [Generating Sequences with Recurrent Neural Networks](https://arxiv.org/abs/1308.0850) | RNN | 확장 |
-| NLP | [LSTM](https://www.bioinf.jku.at/publications/older/2604.pdf) | 긴 시퀀스 | 핵심 |
-| NLP | [Seq2Seq](https://arxiv.org/abs/1409.3215) | Encoder–Decoder | 핵심 |
-| NLP | [Bahdanau Attention](https://arxiv.org/abs/1409.0473) | Attention | 핵심 |
-| NLP/LLM | [Attention Is All You Need](https://arxiv.org/abs/1706.03762) | Transformer | 핵심 |
-| RL | [Multi-Armed Bandit](https://link.springer.com/article/10.1023/A:1013689704352) | 탐색과 활용 | 확장 |
-| RL | [Q-learning](https://link.springer.com/article/10.1007/BF00992698) | TD 학습 | 핵심 |
-| RL | [DQN](https://arxiv.org/abs/1312.5602) | Deep RL | 핵심 |
-| RL | [Rainbow](https://arxiv.org/abs/1710.02298) | DQN 개선 | 확장 |
-| RL | [REINFORCE](https://link.springer.com/article/10.1007/BF00992696) | Policy Gradient | 핵심 |
-| RL | [A3C](https://arxiv.org/abs/1602.01783) | Actor-Critic | 확장 |
-| RL | [PPO](https://arxiv.org/abs/1707.06347) | 정책 최적화 | 핵심 |
-| RL | [Soft Actor-Critic](https://arxiv.org/abs/1801.01290) | 연속 제어 | 확장 |
-| 생성 | [EM Algorithm](https://doi.org/10.1111/j.2517-6161.1977.tb01600.x) | 잠재변수 | 확장 |
-| 생성 | [Auto-Encoding Variational Bayes](https://arxiv.org/abs/1312.6114) | VAE | 핵심 |
-| 생성 | [Generative Adversarial Nets](https://arxiv.org/abs/1406.2661) | GAN | 확장 |
-| 생성 | [DDPM](https://arxiv.org/abs/2006.11239) | Diffusion | 핵심 |
-| 생성 | [DDIM](https://arxiv.org/abs/2010.02502) | 샘플링 | 핵심 |
-| 생성 | [Latent Diffusion Models](https://arxiv.org/abs/2112.10752) | 잠재공간 생성 | 핵심 |
-| 생성 | [DiT](https://arxiv.org/abs/2212.09748) | Diffusion Transformer | 확장 |
-| 생성 | [Flow Matching](https://arxiv.org/abs/2210.02747) | 생성 경로 | 확장 |
-| LLM | [BPE Subword Units](https://arxiv.org/abs/1508.07909) | 토큰화 | 핵심 |
-| LLM | [GPT-2](https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf) | Decoder-only | 핵심 |
-| LLM | [GPT-3](https://arxiv.org/abs/2005.14165) | In-Context Learning | 핵심 |
-| LLM | [Scaling Laws](https://arxiv.org/abs/2001.08361) | 모델·데이터·연산량 | 확장 |
-| LLM | [Chinchilla](https://arxiv.org/abs/2203.15556) | Compute-Optimal Training | 핵심 |
-| LLM | [InstructGPT](https://arxiv.org/abs/2203.02155) | SFT·RLHF | 핵심 |
-| LLM | [DPO](https://arxiv.org/abs/2305.18290) | 선호도 최적화 | 핵심 |
-| LLM/RL | [DeepSeekMath](https://arxiv.org/abs/2402.03300) | GRPO | 핵심 |
-| LLM/RL | [DeepSeek-R1](https://arxiv.org/abs/2501.12948) | Reasoning | 핵심 |
-| LLM/RL | [DAPO](https://arxiv.org/abs/2503.14476) | RL 학습 안정화 | 확장 |
-| 효율화 | [LoRA](https://arxiv.org/abs/2106.09685) | PEFT | 핵심 |
-| 효율화 | [QLoRA](https://arxiv.org/abs/2305.14314) | 양자화 파인튜닝 | 확장 |
-| 효율화 | [RoFormer](https://arxiv.org/abs/2104.09864) | RoPE | 핵심 |
-| 효율화 | [FlashAttention](https://arxiv.org/abs/2205.14135) | GPU 메모리 효율 | 핵심 |
-| 효율화 | [GQA](https://arxiv.org/abs/2305.13245) | KV Head 공유 | 핵심 |
-| 효율화 | [Switch Transformers](https://arxiv.org/abs/2101.03961) | MoE | 확장 |
-| 효율화 | [ZeRO](https://arxiv.org/abs/1910.02054) | 분산 학습 | 핵심 |
-| 효율화 | [Muon](https://arxiv.org/abs/2502.16982) | 최적화 | 확장 |
-| 멀티모달 | [ViT](https://arxiv.org/abs/2010.11929) | Vision Transformer | 핵심 |
-| 멀티모달 | [CLIP](https://arxiv.org/abs/2103.00020) | 이미지·텍스트 정렬 | 핵심 |
-| 멀티모달 | [BLIP-2](https://arxiv.org/abs/2301.12597) | Vision-Language | 확장 |
-| 멀티모달 | [DINOv2](https://arxiv.org/abs/2304.07193) | 자기지도 시각 표현 | 확장 |
-| 멀티모달 | [Segment Anything](https://arxiv.org/abs/2304.02643) | 이미지 분할 | 확장 |
-| 음성 | [Whisper](https://arxiv.org/abs/2212.04356) | 음성 인식 | 확장 |
-| Agent | [RAG](https://arxiv.org/abs/2005.11401) | 외부 지식 활용 | 확장 |
-| Agent | [ReAct](https://arxiv.org/abs/2210.03629) | 도구 사용 | 확장 |
-| 최신 | [s1: Simple Test-Time Scaling](https://arxiv.org/abs/2501.19393) | 추론 시간 연산 | 확장 |
-| 최신 | [Qwen3 Technical Report](https://arxiv.org/abs/2505.09388) | 하이브리드 추론 | 확장 |
-| 최신 | [LLaDA](https://arxiv.org/abs/2502.09992) | 언어 Diffusion | 확장 |
-| 최신 | [The Flexibility Trap](https://proceedings.mlr.press/v306/ni26e.html) | Diffusion LM 평가 | 확장 |
-| 최신 | [LaDiR](https://proceedings.iclr.cc/paper_files/paper/2026/hash/843e1d8ab4819c8c8a4221fce2c8d455-Abstract-Conference.html) | 잠재공간 추론 | 확장 |
-| 최신 | [Qwen3.5-Omni Technical Report](https://arxiv.org/abs/2604.15804) | 통합 멀티모달 | 확장 |
-| 최신 | [LLMs Get Lost In Multi-Turn Conversation](https://arxiv.org/abs/2505.06120) | 대화 신뢰성 | 확장 |
-| 최신 | [The Polar Express](https://proceedings.iclr.cc/paper_files/paper/2026/hash/df88b275bef31ac96c85f0c4013734fc-Abstract-Conference.html) | Muon 행렬 계산 | 확장 |
+- [ ] 학습 노트를 돌아보고 관심 분야 3개와 분야별 미해결 질문 하나씩을 적는다.
+- [ ] 가장 관심 있는 분야의 관련 논문 3편을 골라, 각 초록에서 문제·방법을 추출해 논문 지도를 만든다.
+- [ ] 연구 후보 1의 질문·가설·데이터·지표·Baseline·위험요인을 반 쪽으로 정리한다.
+- [ ] 연구 후보 2도 같은 형식으로 정리한다.
+- [ ] 후보 2개를 자원·구현 난도·검증 가능성으로 비교하고, 주제 하나를 선택한다.
+- [ ] 선택한 주제의 핵심 가설·성공 기준·실험 3개 이내를 1쪽 제안서로 작성한다.
 
-### 5.3 아티클·강의·추가 자료 로그
+#### 재현 준비
 
-공식 문서, 해설 글, 강의, 세미나 등은 **읽은 뒤에만** 아래 표에 추가한다.
+- [ ] 기준 논문에서 재현할 결과 하나를 고르고, 데이터·모델·지표·축소할 조건을 표로 정리한다.
+- [ ] 데이터 이용 조건을 확인하고, 고정 분할·전처리·작은 실행용 subset을 준비한다.
+- [ ] 실행 환경·설정 파일·시드·지표 저장을 구성하고, 최소 예제가 실행되는지 확인한다.
+- [ ] Baseline의 기존 코드를 연결하거나 최소 골격을 작성해 한 배치의 입력·출력을 검증한다.
+- [ ] Baseline 손실·학습 갱신·평가 코드를 연결하고, 한 배치 과적합을 확인한다.
+- [ ] GPU에서 짧은 예비 실행을 하고, 최대 메모리·스텝당 시간·전체 실험 예산을 계산한다.
+- [ ] 축소 Baseline을 시드 1로 실행하고, 기준 결과와의 차이 및 재현 한계를 기록한다.
 
-| 유형 | 제목 | 원문 링크 | 핵심 배운 점 | 내 정리 링크 |
-|---|---|---|---|---|
-| 공식 문서 | [PyTorch Tutorials](https://pytorch.org/tutorials/) | https://pytorch.org/tutorials/ | 학습 후 작성 | 추가 예정 |
-| 공식 문서 | [Hugging Face Course](https://huggingface.co/learn) | https://huggingface.co/learn | 학습 후 작성 | 추가 예정 |
-| 아티클 / 강의 | 추가 예정 | 추가 예정 | 추가 예정 | 추가 예정 |
+#### 비교 실험
 
----
+- [ ] 제안 방법의 변경점 하나를 구현하고, 작은 입력의 출력·기울기를 확인한다.
+- [ ] 같은 예산으로 제안 방법을 시드 1로 실행하고 지표를 저장한다.
+- [ ] Baseline과 제안 방법을 시드 2로 실행하고 지표를 저장한다.
+- [ ] Baseline과 제안 방법을 시드 3으로 실행하고 지표를 저장한다.
+- [ ] 제안 요소 하나를 제거한 Ablation을 시드 1로 실행하고 지표를 저장한다.
+- [ ] 같은 Ablation을 시드 2로 실행하고 지표를 저장한다.
+- [ ] 같은 Ablation을 시드 3으로 실행하고 지표를 저장한다.
+- [ ] 비교·Ablation의 평균·변동성·자원 사용량을 표와 그래프로 정리한다.
+- [ ] 실패 사례를 최대 5개 골라 유형별로 분류하고, 가설을 지지·반박하는 관찰을 적는다.
 
-## 6. 연구 주제 탐색 및 실험 규칙
+#### 결과 정리
 
-### 관심 분야 비교표
+- [ ] 최종 보고서의 문제·가설·방법·실험 설정 부분을 1~2쪽으로 작성한다.
+- [ ] 결과·Ablation·실패 사례·한계·후속 질문 부분을 표·그림 포함 1~2쪽으로 작성한다.
+- [ ] 환경 설치·데이터 준비·학습·평가 명령을 정리하고, 작은 설정으로 재실행한다.
+- [ ] 노트·코드·설정·보고서의 실제 경로를 산출물 표에 연결한다.
 
-| 연구 분야 | 대표 논문 | 가장 흥미로웠던 질문 | 구현 경험 | 관심도 (1~5) | 연구 후보 |
-|---|---|---|---|---|---|
-| 아키텍처 / 표현학습 | ResNet, Attention, ViT | 미작성 | 미작성 | - | - |
-| 최적화 / RL | Adam, PPO, GRPO | 미작성 | 미작성 | - | - |
-| 생성 모델 | VAE, DDPM, Flow Matching | 미작성 | 미작성 | - | - |
-| LLM 학습 / 효율화 | LoRA, QLoRA, FlashAttention | 미작성 | 미작성 | - | - |
-| 멀티모달 / Agent | CLIP, Whisper, RAG, ReAct | 미작성 | 미작성 | - | - |
+### 실험 기록 기준
 
-### 논문을 읽을 때 답할 질문
+- 테스트셋은 최종 평가에 사용하고, 튜닝은 검증셋으로 진행한다.
+- 실행마다 코드 버전·환경·데이터 분할·시드·하이퍼파라미터·학습량을 기록한다.
+- Baseline·제안 방법·Ablation의 데이터·평가·연산 예산을 맞추고, 복수 시드의 평균과 변동성을 보고한다.
+- 수렴 실패와 부정적 결과도 남긴다. 개인정보·비밀 키는 커밋하지 않고, 대용량 데이터·체크포인트는 별도 스토리지로 관리한다.
 
-1. **Problem** — 어떤 기존 한계를 해결하려는가?
-2. **Method** — 무엇을 새롭게 제안했고, 왜 동작할 것이라고 기대하는가?
-3. **Experiments** — 어떤 데이터셋·Baseline·평가 지표·Ablation을 사용했는가?
-4. **Limitations** — 어떤 제약, 실패 사례, 재현의 어려움이 있는가?
-5. **My Hypothesis** — 내가 검증하거나 개선하고 싶은 질문은 무엇인가?
+## 템플릿
 
-### 재현 가능한 실험 규칙
-
-- 훈련/검증/테스트 데이터를 분리하고 **테스트셋을 튜닝에 사용하지 않는다.**
-- 실험별 설정 파일, 코드 버전, 데이터 버전, 라이브러리 환경, 랜덤 시드를 기록한다.
-- 가능한 경우 복수 시드의 평균과 변동성을 보고한다.
-- Baseline과 제안 방법의 데이터·연산 예산·평가 방식이 비교 가능한지 확인한다.
-- 정확도 외에 학습 시간·GPU 메모리·추론 속도·비용을 필요한 만큼 함께 측정한다.
-- 수렴 실패와 부정적 결과도 기록한다. 결과에 유리한 시행만 선택하지 않는다.
-- 개인정보·라이선스·데이터 이용 조건을 확인하고 원본 데이터와 비밀 키를 커밋하지 않는다.
-- 모델 체크포인트와 대용량 데이터는 Git LFS, 외부 스토리지 등을 필요에 따라 사용한다.
-
----
-
-## 7. 저장소 구조 및 문서 템플릿
-
-### 권장 구조
-
-```text
- dl-deep-dive/
- ├── README.md                    # 이 파일: 전체 학습 로드맵
- ├── notes/                       # 교재·개념별 정리
- │   ├── fundamentals/
- │   ├── vision/
- │   ├── nlp/
- │   ├── rl/
- │   ├── generative/
- │   └── llm/
- ├── paper-reviews/               # 논문별 독서 기록
- ├── implementations/             # 직접 구현한 알고리즘·모델
- ├── experiments/                 # 비교 실험, 설정, 결과
- ├── research/                    # 연구 질문·제안서·최종 보고서
- ├── assets/                      # 직접 생성한 그림·도식
- ├── requirements/                # 재현 환경 정보
- └── .gitignore
-```
-
-### 논문 리뷰 템플릿
+### 논문 리뷰
 
 ```markdown
 # [논문 제목]
 
 - 원문:
-- 연결 교재·장:
-- 핵심 키워드:
-- 학습 상태: 읽는 중 / 정리 완료 / 구현 완료 / 재현 완료
+- 연결 교재·주제:
+- 이번에 읽은 범위:
 
-## 1. 해결하려는 문제
+## 문제와 핵심 기여
 
-## 2. 배경 지식 및 핵심 아이디어
+## 주요 수식·모델 구조
 
-## 3. 주요 수식·모델 구조
+## 실험 설정과 주요 결과
 
-## 4. 논문의 실험 설정·결과
+## 한계·의문점
 
-## 5. 한계와 의문점
-
-## 6. 내 구현·재현 결과
-
-## 7. 후속 연구 아이디어
+## 직접 확인한 내용과 후속 질문
 ```
 
-### 실험 보고서 템플릿
+### 실험 보고서
 
 ```markdown
 # [실험 이름]
 
-- 연구 질문:
-- 가설:
+- 연구 질문·가설:
 - 기준 논문 / Baseline:
 - 코드 버전 / 환경:
 - 데이터셋 / 분할:
-- 모델 / 하이퍼파라미터 / 시드:
-- 평가 지표 / 자원 사용량:
+- 모델 / 하이퍼파라미터 / 시드 / 학습량:
+- 평가 지표 / 시간 / 최대 메모리:
 
-## 1. 실험 설계
+## 실험 설계와 비교 조건
 
-## 2. 결과 및 시각화
+## 결과·Baseline 비교·Ablation
 
-## 3. Baseline 비교·Ablation
+## 실패 사례와 한계
 
-## 4. 실패 사례·한계
+## 다음에 검증할 질문
 
-## 5. 결론 및 다음 실험
+## 재현 명령과 산출물 경로
 ```
-
-### 변경 기록
-
-| 업데이트 날짜 | 변경 내용 |
-|---|---|
-| 2026-10-19 | 초기 학습 로드맵, 책-논문 매칭 체크리스트, 연구 템플릿 작성 |
-
----
-
-**최종 체크리스트 업데이트 날짜: 2026-10-19**
